@@ -46,12 +46,42 @@ whole flow can be shown to the client before the merchant accounts are open.
 
 ```bash
 cd backend
-python -m venv .venv && . .venv/bin/activate
+python -m venv .venv && . .venv/bin/activate     # Windows: .venv\Scripts\activate
 pip install -r requirements-dev.txt
 cp .env.example .env    # fill SUPABASE_URL and SUPABASE_SERVICE_KEY
-uvicorn app.main:app --reload
-pytest                  # 16 flow tests, no database needed
+uvicorn app.main:app --reload                    # http://127.0.0.1:8000
+pytest                  # 30 tests, no database needed
 ```
+
+Check it is up:
+
+```bash
+curl http://127.0.0.1:8000/health
+# {"ok":true,"service":"aura-api","database":true,...}
+```
+
+`database: false` means `SUPABASE_SERVICE_KEY` is missing or wrong — the server
+still starts, so this is the only way to notice.
+
+## Run in Docker
+
+Render does not use the Dockerfile (`render.yaml` declares `runtime: python`,
+which builds faster and is cached). It is here so the API runs anywhere a
+container runs — Fly.io, Railway, Cloud Run, a VPS — and so nobody has to match
+Python versions by hand.
+
+```bash
+docker build -t aura-api ./backend
+docker run --rm -p 8000:8000 --env-file backend/.env aura-api
+curl http://127.0.0.1:8000/health
+```
+
+The image runs as a non-root user, and `.dockerignore` keeps `.env`, `.venv`
+and the tests out of the build context, so no secret can reach a layer.
+
+To deploy to Render as a container instead of the native runtime, change
+`render.yaml` to `runtime: docker` with `dockerfilePath: ./Dockerfile`
+(`rootDir` is already `backend`).
 
 ## Deploy free on Render
 
