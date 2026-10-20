@@ -1,0 +1,11 @@
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+httpx==0.28.1
+pydantic==2.11.4
+python-multipart==0.0.20
+cryptography==44.0.3
+# Windows ships no IANA time zone database, so ZoneInfo("Asia/Karachi") raises
+# ZoneInfoNotFoundError and every request 500s. Linux hosts have one, but pinning
+# it here keeps local development on Windows working and the zone data identical
+# everywhere.
+tzdata==2025.2

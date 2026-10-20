@@ -1,0 +1,37 @@
+# Render blueprint: New → Blueprint → pick this repo. Free plan.
+services:
+  - type: web
+    name: aura-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: PUBLIC_URL
+        sync: false
+      - key: PAYMENT_MODE
+        value: sandbox
+      - key: TIMEZONE
+        value: Asia/Karachi
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: APP_RETURN_URL
+        value: aurabyhs://payment
+      - key: JAZZCASH_MERCHANT_ID
+        sync: false
+      - key: JAZZCASH_PASSWORD
+        sync: false
+      - key: JAZZCASH_INTEGRITY_SALT
+        sync: false
+      - key: EASYPAISA_STORE_ID
+        sync: false
+      - key: EASYPAISA_HASH_KEY
+        sync: false
