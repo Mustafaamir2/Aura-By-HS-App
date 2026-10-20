@@ -17,12 +17,23 @@ services:
         sync: false
       - key: PUBLIC_URL
         sync: false
+      # "simulator" needs no merchant account: the pay page shows TEST MODE and a
+      # payment can be approved by hand, so the whole flow is exercisable from
+      # day one. Move to "sandbox" once gateway test credentials exist, and to
+      # "live" only after a test payment has been seen arriving in POS ->
+      # Online payments.
       - key: PAYMENT_MODE
-        value: sandbox
+        value: simulator
       - key: TIMEZONE
         value: Asia/Karachi
+      # Deliberately not defaulted. "*" would let any site on the internet call
+      # this API, and a default that works is a default nobody revisits. Set it
+      # in the dashboard to the real list, comma separated, no trailing slashes:
+      #   https://aurabyhs.com,https://www.aurabyhs.com,<the POS address>
+      # Omit the website and every request from it is blocked by the browser
+      # while the API itself looks perfectly healthy.
       - key: CORS_ORIGINS
-        value: "*"
+        sync: false
       - key: APP_RETURN_URL
         value: aurabyhs://payment
       - key: JAZZCASH_MERCHANT_ID
